@@ -1,8 +1,9 @@
 /*
 TODO: 
-animate solving process
+animate solving process [done]
 generate new puzzle
 check puzzle 
+add input to slow down solving speed
 */
 document.addEventListener('DOMContentLoaded', () => {
     // get all sudoku-cell class and place in an array 
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     };
 
-    function solvePuzzle(puzzle) {
+    async function solvePuzzle(puzzle, cells) {
         // get row col of an empty cell
         const empty = checkEmpty(puzzle);
         
@@ -120,31 +121,53 @@ document.addEventListener('DOMContentLoaded', () => {
             if (checkGuess(puzzle, row, col, guess)){
                 console.log('row ', row, 'col' , col, 'guess' , guess);
                 puzzle[row][col] = guess;
+
+                // remove class from previous clel
+                if (currentGuessCell) {
+                    currentGuessCell.classList.remove('current-guess');
+                }
+    
+                // update current guess cell and highlight it
+                const currentGuessCellIndex = row * 9 + col;
+                currentGuessCell = cells[currentGuessCellIndex];
+                currentGuessCell.value = guess;
+                currentGuessCell.classList.add('current-guess');
+
+                // get cell index 
+                // cells[row * 9 + col].value = guess; 
+                // add class to show currently edited cell
+                // cells[row * 9 + col].classList.add('current-guess');   
+                // solving speed
+                await new Promise(resolve => setTimeout(resolve, 0));
+                // checkEmptyCell(puzzle, cells);
                 // if not solved repeat
-                if (solvePuzzle(puzzle)){
+                if (await solvePuzzle(puzzle, cells)){
                     console.log('solved');
                     console.log(puzzle);
                     // console.log(puzzle);
                     return true;
                 }
+                currentGuessCell.value = ''; // Clear cell value in UI
+                currentGuessCell.classList.remove('current-guess'); // Remove highlight
             }
             puzzle[row][col] = 0;
-
             console.log('get back');
         }
-        
         console.log('end');
         return false;
     };
     
+    let currentGuessCell = null;
     initializePuzzle(puzzle,cells);
+    // console.log(cells[4].value);
     // solvePuzzle(solvedPuzzle);
-    console.log(cells);
+    // console.log(cells);
+    // console.log(checkEmptyCell(cells));
     check.addEventListener('click', checkSolution);
     // if (solvePuzzle(puzzle)) console.log(puzzle1);
     solve.onclick = function(){
-        solvePuzzle(solvedPuzzle);
-        initializePuzzle(solvedPuzzle, cells);    
+        solvePuzzle(puzzle, cells);
+        // initializePuzzle(puzzle, cells);    
     }
 
 })
