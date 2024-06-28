@@ -2,8 +2,9 @@
 TODO: 
 animate solving process [done]
 generate new puzzle [done]
-clear puzzle for new game
+clear puzzle for new game [done]
 check puzzle 
+add timer ?
 add input to slow down solving speed
 */
 document.addEventListener('DOMContentLoaded', () => {
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case "hard":
                 return randomLevel(30,40);
             case "pro":
-                return randomLevel(10,25);
+                return randomLevel(15,25);
             case "pain":
                 return randomLevel(5,10);
         }
