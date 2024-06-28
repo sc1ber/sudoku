@@ -9,6 +9,13 @@
     <body>
         <div class="container">
             <h1>Sudoku</h1>
+            <select name="Levels" id="levels">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+                <option value="pro">Pro</option>
+                <option value="pain">I want pain</option>
+            </select>
             <div class="sudoku">
                 <script>
                     for (let i=0 ; i < 81; i++){
@@ -16,6 +23,7 @@
                     }
                 </script>
             </div>
+            <button id="newButton">New Game</button>
             <button id="checkButton">Check</button>
             <button id="solveButton">Solve</button>
         </div>

@@ -1,29 +1,31 @@
 /*
 TODO: 
 animate solving process [done]
-generate new puzzle
+generate new puzzle [done]
+clear puzzle for new game
 check puzzle 
 add input to slow down solving speed
 */
 document.addEventListener('DOMContentLoaded', () => {
     // get all sudoku-cell class and place in an array 
     cells = Array.from(document.getElementsByClassName("sudoku-cell"));
+    newGame = document.getElementById("newButton");
     check = document.getElementById("checkButton");
     solve =  document.getElementById("solveButton");
 
-    const puzzle = [
-        [5, 3, 0, 0, 7, 0, 0, 0, 0],
-        [6, 0, 0, 1, 9, 5, 0, 0, 0],
-        [0, 9, 8, 0, 0, 0, 0, 6, 0],
-        [8, 0, 0, 0, 6, 0, 0, 0, 3],
-        [4, 0, 0, 8, 0, 3, 0, 0, 1],
-        [7, 0, 0, 0, 2, 0, 0, 0, 6],
-        [0, 6, 0, 0, 0, 0, 2, 8, 0],
-        [0, 0, 0, 4, 1, 9, 0, 0, 5],
-        [0, 0, 0, 0, 8, 0, 0, 7, 9]
-    ];
-
-    const solvedPuzzle = puzzle;
+    // const puzzle = [
+    //     [5, 3, 0, 0, 7, 0, 0, 0, 0],
+    //     [6, 0, 0, 1, 9, 5, 0, 0, 0],
+    //     [0, 9, 8, 0, 0, 0, 0, 6, 0],
+    //     [8, 0, 0, 0, 6, 0, 0, 0, 3],
+    //     [4, 0, 0, 8, 0, 3, 0, 0, 1],
+    //     [7, 0, 0, 0, 2, 0, 0, 0, 6],
+    //     [0, 6, 0, 0, 0, 0, 2, 8, 0],
+    //     [0, 0, 0, 4, 1, 9, 0, 0, 5],
+    //     [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    // ];
+    
+    // generate clean grid 
 
     function initializePuzzle(puzzle,cells) {
         // get cell from cells aray 
@@ -59,6 +61,85 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkBox(puzzle, cells){
 
     };
+
+    function randomLevel(min, max){
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+
+    function getLevel(level){
+        switch(level){
+            case "easy":
+                return randomLevel(55,65);   
+            case "medium":
+                return randomLevel(45,55);
+            case "hard":
+                return randomLevel(30,40);
+            case "pro":
+                return randomLevel(10,25);
+            case "pain":
+                return randomLevel(5,10);
+        }
+    }
+
+    function shuffleArray(array) {
+        // index count going down
+        for (let i = array.length - 1; i > 0; i--) {
+            // pick random number index
+            const j = Math.floor(Math.random() * (i + 1));
+            // swap index 
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function generatePuzzle(puzzle, level){  
+        const difficulty = 81-getLevel(level);
+        let cellsFilled = 0;
+
+        function isSolvable(puzzle){
+            for (let row=0; row < 9; row++){
+                // generate random number for columns to be filled in a row
+                for (let col=0; col < 9; col++){
+                    if(puzzle[row][col] === 0 ){
+                        let numbers = [1,2,3,4,5,6,7,8,9];
+                        shuffleArray(numbers);
+                        for (let num of numbers){
+                            if(checkGuess(puzzle,row,col,num)){
+                                puzzle[row][col] = num;
+                                if(isSolvable(puzzle)){
+                                    return true
+                                }
+                                puzzle[row][col] = 0;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        isSolvable(puzzle);
+
+        while(cellsFilled < difficulty){
+            let randomRow = Math.floor(Math.random() * 9);
+            let randomCol = Math.floor(Math.random() * 9);
+            if(puzzle[randomRow][randomCol] !== 0){
+                puzzle[randomRow][randomCol] = 0;
+                cellsFilled++;
+            }
+        }
+
+
+        console.log(puzzle);
+    };
+
+    function clearPuzzle(cells){
+        // puzzle = Array(9).fill().map(()=>Array(9).fill(0));
+        cells.forEach((cell, index ) => {
+            cell.value = null;
+            cell.disabled = false;
+        });
+    }
 
     function checkEmpty(puzzle) {
         // scan 9 rows 
@@ -104,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     };
 
-    async function solvePuzzle(puzzle, cells) {
+    async function solvePuzzle(puzzle, cells, animate) {
         // get row col of an empty cell
         const empty = checkEmpty(puzzle);
         
@@ -122,51 +203,69 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('row ', row, 'col' , col, 'guess' , guess);
                 puzzle[row][col] = guess;
 
-                // remove class from previous clel
-                if (currentGuessCell) {
-                    currentGuessCell.classList.remove('current-guess');
-                }
-    
-                // update current guess cell and highlight it
-                const currentGuessCellIndex = row * 9 + col;
-                currentGuessCell = cells[currentGuessCellIndex];
-                currentGuessCell.value = guess;
-                currentGuessCell.classList.add('current-guess');
+                if (animate){
+                    // remove class from previous clel
+                    if (currentGuessCell) {
+                        currentGuessCell.classList.remove('current-guess');
+                    }
+        
+                    // update current guess cell and highlight it
+                    const currentGuessCellIndex = row * 9 + col;
+                    currentGuessCell = cells[currentGuessCellIndex];
+                    currentGuessCell.value = guess;
+                    currentGuessCell.classList.add('current-guess');
 
-                // get cell index 
-                // cells[row * 9 + col].value = guess; 
-                // add class to show currently edited cell
-                // cells[row * 9 + col].classList.add('current-guess');   
-                // solving speed
-                await new Promise(resolve => setTimeout(resolve, 0));
-                // checkEmptyCell(puzzle, cells);
-                // if not solved repeat
-                if (await solvePuzzle(puzzle, cells)){
-                    console.log('solved');
-                    console.log(puzzle);
+                    // get cell index 
+                    // cells[row * 9 + col].value = guess; 
+                    // add class to show currently edited cell
+                    // cells[row * 9 + col].classList.add('current-guess');   
+                    // solving speed
+                    await new Promise(resolve => setTimeout(resolve, 0));
+                    // checkEmptyCell(puzzle, cells);
+                    // if not solved repeat
+                }
+
+                // await new Promise(resolve => setTimeout(resolve, 0));
+
+                if (await solvePuzzle(puzzle, cells, animate)){
+                    // console.log('solved');
                     // console.log(puzzle);
                     return true;
                 }
-                currentGuessCell.value = ''; // Clear cell value in UI
-                currentGuessCell.classList.remove('current-guess'); // Remove highlight
+
+                if (animate) {
+                    currentGuessCell.value = ''; // clear cell value in UI
+                    currentGuessCell.classList.remove('current-guess'); // remove highlight
+                }
             }
             puzzle[row][col] = 0;
             console.log('get back');
+
         }
         console.log('end');
         return false;
     };
     
     let currentGuessCell = null;
-    initializePuzzle(puzzle,cells);
+    // initializePuzzle(puzzle,cells);
     // console.log(cells[4].value);
     // solvePuzzle(solvedPuzzle);
     // console.log(cells);
     // console.log(checkEmptyCell(cells));
+    const puzzle = Array(9).fill().map(()=>Array(9).fill(0));
+
+    newGame.addEventListener('click', function (){
+        var level = document.getElementById("levels");
+        clearPuzzle(puzzle,cells);
+        generatePuzzle(puzzle,level.value);
+        initializePuzzle(puzzle,cells)
+        console.log(puzzle);
+    })
     check.addEventListener('click', checkSolution);
     // if (solvePuzzle(puzzle)) console.log(puzzle1);
-    solve.onclick = function(){
-        solvePuzzle(puzzle, cells);
+    solve.onclick = async function(){
+        await solvePuzzle(puzzle,cells,true);
+        initializePuzzle(puzzle, cells);
         // initializePuzzle(puzzle, cells);    
     }
 
