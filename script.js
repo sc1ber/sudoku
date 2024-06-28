@@ -129,12 +129,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-
         console.log(puzzle);
     };
 
     function clearPuzzle(cells){
         // puzzle = Array(9).fill().map(()=>Array(9).fill(0));
+        console.log('new game ',puzzle)
         cells.forEach((cell, index ) => {
             cell.value = null;
             cell.disabled = false;
@@ -252,11 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // solvePuzzle(solvedPuzzle);
     // console.log(cells);
     // console.log(checkEmptyCell(cells));
-    const puzzle = Array(9).fill().map(()=>Array(9).fill(0));
+    let puzzle = Array(9).fill().map(()=>Array(9).fill(0));
 
     newGame.addEventListener('click', function (){
+        puzzle = Array(9).fill().map(()=>Array(9).fill(0));
         var level = document.getElementById("levels");
-        clearPuzzle(puzzle,cells);
+        clearPuzzle(cells);
         generatePuzzle(puzzle,level.value);
         initializePuzzle(puzzle,cells)
         console.log(puzzle);
