@@ -5,7 +5,7 @@ generate new puzzle [done]
 clear puzzle for new game [done]
 check puzzle 
 add timer ?
-add input to slow down solving speed
+add input to slow down solving speed [done]
 */
 document.addEventListener('DOMContentLoaded', () => {
     // get all sudoku-cell class and place in an array 
@@ -47,11 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkSolution(){
         // get cell values , no value = 0
         const currentGrid = cells.map(cell => Number(cell.value) || 0);
+        for(let i = 0; i < currentGrid.length; i++){
+            // console.log(`cell ${i} row ${Math.floor(i/9)}`);
+            console.log(`cell ${i} col ${i%9}`);
+        }
+        // const currentGuessCellIndex = row * 9 + col;
         console.log(currentGrid);
 
     };
 
     function checkRow(grid, cell) {
+        const row = Math.floor(cell / 9);
+        const duplicates = new Set();
         
     }; 
 
@@ -186,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     };
 
-    async function solvePuzzle(puzzle, cells, animate) {
+    async function solvePuzzle(puzzle, cells, animate, speed) {
         // get row col of an empty cell
         const empty = checkEmpty(puzzle);
         
@@ -221,14 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     // add class to show currently edited cell
                     // cells[row * 9 + col].classList.add('current-guess');   
                     // solving speed
-                    await new Promise(resolve => setTimeout(resolve, 0));
+                    await new Promise(resolve => setTimeout(resolve, speed));
                     // checkEmptyCell(puzzle, cells);
                     // if not solved repeat
                 }
 
                 // await new Promise(resolve => setTimeout(resolve, 0));
 
-                if (await solvePuzzle(puzzle, cells, animate)){
+                if (await solvePuzzle(puzzle, cells, animate, speed)){
                     // console.log('solved');
                     // console.log(puzzle);
                     return true;
@@ -257,16 +264,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     newGame.addEventListener('click', function (){
         puzzle = Array(9).fill().map(()=>Array(9).fill(0));
-        var level = document.getElementById("levels");
+        var level = document.getElementById("levels").value;
         clearPuzzle(cells);
-        generatePuzzle(puzzle,level.value);
+        generatePuzzle(puzzle,level);
         initializePuzzle(puzzle,cells)
         console.log(puzzle);
     })
-    check.addEventListener('click', checkSolution);
+    check.addEventListener('click', function () {
+        checkSolution();
+    });
     // if (solvePuzzle(puzzle)) console.log(puzzle1);
     solve.onclick = async function(){
-        await solvePuzzle(puzzle,cells,true);
+        var speed = document.getElementById("speed").value;
+        await solvePuzzle(puzzle,cells,true,speed);
         initializePuzzle(puzzle, cells);
         // initializePuzzle(puzzle, cells);    
     }
