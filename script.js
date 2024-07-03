@@ -49,7 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentGrid = cells.map(cell => Number(cell.value) || 0);
         for(let i = 0; i < currentGrid.length; i++){
             // console.log(`cell ${i} row ${Math.floor(i/9)}`);
-            console.log(`cell ${i} col ${i%9}`);
+            if(checkRow(currentGrid,i)){
+                console.log('row is correct');
+            } else {
+                console.log('row not correct')
+            }
+            // console.log(`cell ${i} row ${Math.floor(i / 9)} col ${i%9} value ${currentGrid[i]}`);
         }
         // const currentGuessCellIndex = row * 9 + col;
         console.log(currentGrid);
@@ -57,9 +62,33 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function checkRow(grid, cell) {
-        const row = Math.floor(cell / 9);
-        const duplicates = new Set();
+        // console.log(`cell ${cell}`);
+        const startRow = Math.floor(cell / 9) * 9;
+        const endRow = (startRow) + 9;
+        // let duplicates = new Set();
+        const array = [];
         
+        // get start row and end row with respect to 1d array grid
+        for(let i = startRow; i < endRow; i++){
+            // duplicates.add(grid[i]);
+            array.push(grid[i]);
+        }
+        
+        // check for duplicates in the arra y
+        const arrayDups = array.filter((item, index) => array.indexOf(item) !== index);
+        
+        // if array contains element , there is a dup
+        if(arrayDups.length !== 0){
+            console.log('there is a duplicate');
+            console.log(`duplicate from array ${arrayDups}`);
+            return false;
+        }
+
+        return true;
+        // console.log(`startRow ${startRow}`);
+        // console.log(`endRow ${endRow - 1}`);
+        // console.log(`duplicates ${Array.from(duplicates)}`);
+        // duplicates.clear();
     }; 
 
     function checkCol(puzzle, cells){
