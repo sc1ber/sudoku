@@ -48,14 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // get cell values , no value = 0
         const currentGrid = cells.map(cell => Number(cell.value) || 0);
         for(let i = 0; i < currentGrid.length; i++){
-            // console.log(`cell ${i} row ${Math.floor(i/9)}`);
-            checkCol(currentGrid,i);
-            // if(checkRow(currentGrid,i)){
-            //     console.log('row is correct');
-            // } else {
-            //     console.log('row not correct')
-            // }
-            console.log(`cell ${i} row ${Math.floor(i / 9)} col ${i%9} value ${currentGrid[i]}`);
+            // console.log(`cell ${i} row ${Math.floor(i / 9)} col ${i%9} value ${currentGrid[i]}`);
+            if(checkRow(currentGrid,i) && checkCol(currentGrid,i)){
+                console.log('solution is correct');
+            } else {
+                console.log('solution not correct')
+            }
         }
         // const currentGuessCellIndex = row * 9 + col;
         console.log(currentGrid);
@@ -80,8 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // if array contains element , there is a dup
         if(arrayDups.length !== 0){
-            console.log('there is a duplicate');
-            console.log(`duplicate from array ${arrayDups}`);
+            // console.log('there is a duplicate');
+            // console.log(`duplicate from array ${arrayDups}`);
             return false;
         }
 
@@ -94,8 +92,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkCol(grid, cell){
         const startCol = cell % 9;
+        const endCol = 81-(9 -startCol);
+        const array = [];
+        // console.log(`startCol ${startCol} endCol ${endCol}`);
 
-        console.log(`startCol ${startCol}`);
+        // increment is by 9 since array being tested is 1d 
+        // + 9 for repeating column
+        for(let i = startCol; i <= endCol; i=i+9){
+            // duplicates.add(grid[i]);
+            array.push(grid[i]);
+        }
+        
+        // console.log(`non filtered ${array}`);
+        // check for duplicates in the arra y
+        const arrayDups = array.filter((item, index) => array.indexOf(item) !== index);
+        
+        // if array contains element , there is a dup
+        if(arrayDups.length !== 0){
+            // console.log('there is a duplicate');
+            // console.log(`duplicate from array ${arrayDups}`);
+            return false;
+        }
+        return true;
+
     };
 
     function checkBox(puzzle, cells){
