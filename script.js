@@ -49,12 +49,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentGrid = cells.map(cell => Number(cell.value) || 0);
         for(let i = 0; i < currentGrid.length; i++){
             // console.log(`cell ${i} row ${Math.floor(i/9)}`);
-            if(checkRow(currentGrid,i)){
-                console.log('row is correct');
-            } else {
-                console.log('row not correct')
-            }
-            // console.log(`cell ${i} row ${Math.floor(i / 9)} col ${i%9} value ${currentGrid[i]}`);
+            checkCol(currentGrid,i);
+            // if(checkRow(currentGrid,i)){
+            //     console.log('row is correct');
+            // } else {
+            //     console.log('row not correct')
+            // }
+            console.log(`cell ${i} row ${Math.floor(i / 9)} col ${i%9} value ${currentGrid[i]}`);
         }
         // const currentGuessCellIndex = row * 9 + col;
         console.log(currentGrid);
@@ -91,8 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // duplicates.clear();
     }; 
 
-    function checkCol(puzzle, cells){
+    function checkCol(grid, cell){
+        const startCol = cell % 9;
 
+        console.log(`startCol ${startCol}`);
     };
 
     function checkBox(puzzle, cells){
@@ -166,12 +169,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        console.log(puzzle);
+        // console.log(puzzle);
     };
 
     function clearPuzzle(cells){
         // puzzle = Array(9).fill().map(()=>Array(9).fill(0));
-        console.log('new game ',puzzle)
+        // console.log('new game ',puzzle)
         cells.forEach((cell, index ) => {
             cell.value = null;
             cell.disabled = false;
@@ -195,12 +198,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkGuess(puzzle, row, col, guess) {
         // check each col from the row of the empty cell
         for (let c=0; c < 9; c++){
-            if (puzzle[row][c] === guess) {console.log('exist in column');return false;}; 
+            if (puzzle[row][c] === guess) {
+                // console.log('exist in column');
+                return false;
+            }; 
         }
 
         // check each row from the column of the empty cell
         for (let r=0; r < 9; r++){
-            if (puzzle[r][col] === guess) {console.log('exist in row');return false;};
+            if (puzzle[r][col] === guess) {
+                // console.log('exist in row');
+                return false;
+            };
         }
 
         // initialized mini box start
@@ -210,15 +219,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // range of loop is from start of mini box + 3
         for (let r = rowStart; r < (rowStart + 3); r++){
             for (let c = colStart; c <(colStart + 3); c++) {
-                console.log('box', r, c);
+                // console.log('box', r, c);
                 if (puzzle[r][c] === guess) {
-                    console.log('exist in mini box');
+                    // console.log('exist in mini box');
                     return false;
                 }
             }
         }
         
-        console.log('guess is correct');
+        // console.log('guess is correct');
         return true;
     };
 
@@ -231,13 +240,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const [row, col] = empty;
 
-        console.log('row', row, 'col', col);
+        // console.log('row', row, 'col', col);
         
         for (let guess=1; guess <= 9; guess++) {
-            console.log('guess', guess);
+            // console.log('guess', guess);
             // check if guess is correct
             if (checkGuess(puzzle, row, col, guess)){
-                console.log('row ', row, 'col' , col, 'guess' , guess);
+                // console.log('row ', row, 'col' , col, 'guess' , guess);
                 puzzle[row][col] = guess;
 
                 if (animate){
@@ -276,10 +285,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             puzzle[row][col] = 0;
-            console.log('get back');
+            // console.log('get back');
 
         }
-        console.log('end');
+        // console.log('end');
         return false;
     };
     
