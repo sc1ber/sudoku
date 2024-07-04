@@ -49,10 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentGrid = cells.map(cell => Number(cell.value) || 0);
         for(let i = 0; i < currentGrid.length; i++){
             // console.log(`cell ${i} row ${Math.floor(i / 9)} col ${i%9} value ${currentGrid[i]}`);
-            if(checkRow(currentGrid,i) && checkCol(currentGrid,i)){
+            if(checkRow(currentGrid,i) && checkCol(currentGrid,i) && checkBox(currentGrid,i)){
                 console.log('solution is correct');
             } else {
-                console.log('solution not correct')
+                console.log('solution is not correct')
             }
         }
         // const currentGuessCellIndex = row * 9 + col;
@@ -117,8 +117,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
-    function checkBox(puzzle, cells){
-
+    function checkBox(grid, cell){
+        //logic must stop at cell 0
+        if(cell < 9){
+            const startRow = Math.floor(cell / 3) * 3;
+            const startCol = (cell % 3) * 3;
+            // console.log(`check start ${startRow} end ${startCol}`);
+            const miniBox = [];
+            for (let i = 0; i < 3; i++) {
+              for (let j = 0; j < 3; j++) {
+                // calculate the index in the 1D array
+                const index = (startRow + i) * 9 + (startCol + j);
+                miniBox.push(grid[index]);
+              }
+            }
+            const miniBoxDups = miniBox.filter((item, index) => miniBox.indexOf(item) !== index);
+            if(miniBoxDups.length !== 0){
+                // console.log(`dups ${miniBoxDups}`);
+                // console.log('theres a dup');
+                return false;
+            }
+            return true
+            // console.log(`miniBox ${miniBox}`);
+        }
+        return true 
     };
 
     function randomLevel(min, max){
