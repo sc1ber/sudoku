@@ -3,8 +3,8 @@ TODO:
 animate solving process [done]
 generate new puzzle [done]
 clear puzzle for new game [done]
-check puzzle 
-add timer ?
+check puzzle [done]
+add timer 
 add input to slow down solving speed [done]
 */
 document.addEventListener('DOMContentLoaded', () => {
@@ -47,16 +47,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkSolution(){
         // get cell values , no value = 0
         const currentGrid = cells.map(cell => Number(cell.value) || 0);
+        let isSolutionCorrect = false;
         for(let i = 0; i < currentGrid.length; i++){
             // console.log(`cell ${i} row ${Math.floor(i / 9)} col ${i%9} value ${currentGrid[i]}`);
             if(checkRow(currentGrid,i) && checkCol(currentGrid,i) && checkBox(currentGrid,i)){
-                console.log('solution is correct');
+                // console.log('solution is correct');
+                isSolutionCorrect = true;
+
             } else {
-                console.log('solution is not correct')
+                // console.log('solution is not correct');
+                isSolutionCorrect = false;
             }
         }
+
+        if(isSolutionCorrect === false){alert(`Solution is not correct`)}
+        else{alert(`Solution is correct`);}
         // const currentGuessCellIndex = row * 9 + col;
-        console.log(currentGrid);
+        // console.log(currentGrid);
 
     };
 
@@ -347,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearPuzzle(cells);
         generatePuzzle(puzzle,level);
         initializePuzzle(puzzle,cells)
-        console.log(puzzle);
+        // console.log(puzzle);
     })
     check.addEventListener('click', function () {
         checkSolution();
@@ -355,6 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // if (solvePuzzle(puzzle)) console.log(puzzle1);
     solve.onclick = async function(){
         var speed = document.getElementById("speed").value;
+        var animate = document.getElementById("animate").value;
+        console.log(animate);
         await solvePuzzle(puzzle,cells,true,speed);
         initializePuzzle(puzzle, cells);
         // initializePuzzle(puzzle, cells);    
